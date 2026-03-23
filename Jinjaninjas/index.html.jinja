@@ -20,7 +20,7 @@
         </aside>
         <main>
             <h1>Welcome to The Archive!</h1>
-            <p>If you're on this website, ou robably love niche music. Well, there are lots of ways you show off how niche you are:</p>
+            <p>If you're on this website, you probably love niche music. Well, there are lots of ways you show off how niche you are:</p>
             <ul>
                 <li><strong>Rate</strong> a song somebody's uploaded to show how many opinions you have on the niche music you listen to!</li>
                 <li><strong>Upload</strong> a song yourself, to show off that you've found a song so niche nobody's put it on here yet!</li>
@@ -31,7 +31,31 @@
         <aside id="rightSidebar" style="margin-left: 10px;">
             <h2>Sign In!</h2>
             <div class="box">
-                <p>Do the form later sparkle sparkle</p>
+                <form action="/submit-form" method="POST">
+                    <h3>Username:</h3>
+                    <input type="text" id="username" name="username" required>
+                    <h3>Password:</h3>
+                    <input type="password" id="password" name="password" required>
+                    <input type="submit" value="Submit">
+                 </form>
+            </div>
+            <h2>Sign Up!</h2>
+            <div class="box">
+                <form action="/submit-form" method="POST">
+                    <h3>Username:</h3>
+                    <input type="text" name="username" required>
+                    <h3>Email Address:</h3>
+                    <input type="text" name="username" required>
+                    <h3>Password:</h3>
+                    <input type="password" name="password" required>
+                    <h3>DOB - Please use DD/MM/YYYY:</h3>
+                    <div>
+                        <input type="number" name="dd" required>
+                        <input type="number" name="mm" required>
+                        <input type="number" name="yyyy" required>
+                    </div>
+                    <input type="submit" value="Submit">
+                 </form>
             </div>
         </aside>
     </div>
