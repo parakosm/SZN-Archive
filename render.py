@@ -2,7 +2,7 @@ from jinja2 import Environment, FileSystemLoader
 
 # Define the directory where your templates are stored
 # Assuming 'templates' folder is in the same directory as the script
-template_dir = "jinjaninjas" 
+template_dir = "templates" 
 
 # Create the Jinja environment
 env = Environment(loader=FileSystemLoader(template_dir))
