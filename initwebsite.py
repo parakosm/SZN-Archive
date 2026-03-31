@@ -10,9 +10,8 @@ def index():
 def index_formsubmitted():
     if request.method == 'POST':
         form_data = request.form
-        
-        result_message = f"Hello, {form_data['username']}! Your form was submitted."
         print(f"Received data: {dict(form_data)}") # Log the data on the server
+        return render_template('indexwsignin.html.jinja', username=form_data['username'])
 
 if __name__ == '__main__':
     app.run(debug=True)
