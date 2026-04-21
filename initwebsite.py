@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, make_response
 import sqlite3
 
 app = Flask(__name__)
@@ -19,6 +19,8 @@ def index_signinsubmitted():
         database.close()
         try:
             if user[0] == form_data['password']:
+                signin = make_response("Sign In Successful!")
+                signin.setcookie("User", form_data['username'])
                 return render_template('indexwsignin.html.jinja', username=form_data['username'])
             else:
                 return render_template('indexwsigninfail.html.jinja')
