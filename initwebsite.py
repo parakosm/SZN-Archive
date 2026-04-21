@@ -12,7 +12,19 @@ def index_signinsubmitted():
     if request.method == 'POST':
         form_data = request.form
         print(f"Sign in attempt: {dict(form_data)}") 
-        return render_template('indexwsignin.html.jinja', username=form_data['username'])
+        database = sqlite3.connect("Database\database.db")
+        cursor = database.cursor()
+        cursor.execute(f"SELECT password FROM Users WHERE username = \'{form_data['username']}\'")
+        user = cursor.fetchone()
+        database.close()
+        try:
+            if user[0] == form_data['password']:
+                return render_template('indexwsignin.html.jinja', username=form_data['username'])
+            else:
+                return render_template('indexwsigninfail.html.jinja')
+        except:
+            return render_template('indexwsigninfail.html.jinja')
+
     
 @app.route('/submit-signup', methods=['POST'])
 def index_signupsubmitted():
