@@ -30,7 +30,6 @@ def index_signinsubmitted():
         except:
             return render_template('indexwsigninfail.html.jinja')
 
-    
 @app.route('/submit-signup', methods=['POST'])
 def index_signupsubmitted():
     if request.method == 'POST':
@@ -45,6 +44,34 @@ def index_signupsubmitted():
         signup = make_response(render_template('indexwsignup.html.jinja', username=form_data['username']))
         signup.set_cookie("User", form_data['username'])
         return signup
+        
+@app.route('/upload')
+def upload():
+    user = request.cookies.get('User')
+    if user is None:
+        user = "None"
+    return render_template('upload.html.jinja', user=user)
+
+@app.route('/submit-song', methods=['POST'])
+def upload_songsubmitted():
+    if request.method == 'POST':
+        form_data = request.form
+        print(f"Upload attempt: {dict(form_data)}")
+        database = sqlite3.connect("Database\database.db")
+        cursor = database.cursor()
+        title = form_data['title']
+        release = form_data['release']
+        streaminglink = form_data['streaminglink']
+        forfansof = form_data['FFO']
+        user = request.cookies.get('User')
+        cursor.execute(f"SELECT songid FROM Songs")
+        ids_available = cursor.fetchall()
+        for i, entry in enumerate(ids_available):
+            ids_available[i] = entry.replace(",", "")
+        newid = max(ids_available)
+        cursor.execute("INSERT INTO Users (username, songid, streaminglink, title, release, FFO) VALUES (?, ?, ?, ?, ?, ?)", ())
+        database.commit()
+        database.close()
 
 if __name__ == '__main__':
     app.run(debug=True)

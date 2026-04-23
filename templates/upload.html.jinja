@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 
 <div id="container">
     <div id="headerArea">
@@ -22,21 +22,24 @@
             <h1>Upload a Song! :3</h1>
             <p>If you're on this website, you probably love niche music. But somebody needs to upload the niche music to the archive! Take matters into your own hands.</p>
             {%if user is eq "None"%}
-            <h2>You need an account to upload songs to our site! Do yourself a solid and sign up using the sidebar.</h2>
-            <h3>Or Sign Up if you already have one lolz</h3>
+            <h2>You need an account to upload songs to our site! Do yourself a solid and Sign Up using the sidebar.</h2>
+            <h3>Or Sign In if you already have one lolz</h3>
             {%else%}
-            <h3>Title</h3>
-            <p>What's the song called?</p>
-            <input type="text" name="title" required>
-            <h3>Release</h3>
-            <p>What Album / EP / Single / Mixtape is it off? Compilations are for POSERS!</p>
-            <input type="text" name="release" required>
-            <h3>Streaming Link</h3>
-            <p>Put in a link for where everyone can stream it for free. WITHOUT AN ACCOUNT. Bandcamp, Youtube, hell, even Google Drive.</p>
-            <input type="text" name="streaminglink" required>
-            <h3>FFO - Optional</h3>
-            <p>Who is this for fans of? Bands, places, genres, subconcepts of existentialism?</p>
-            <input type="text" name="FFO">
+            <form action="/submit-song" method="POST">
+                <h3>Title</h3>
+                <p>What's the song called?</p>
+                <input type="text" name="title" required>
+                <h3>Release</h3>
+                <p>What Album / EP / Single / Mixtape is it off? Compilations are for POSERS!</p>
+                <input type="text" name="release" required>
+                <h3>Streaming Link</h3>
+                <p>Put in a link for where everyone can stream it for free. WITHOUT AN ACCOUNT. Bandcamp, Youtube, hell, even Google Drive.</p>
+                <input type="text" name="streaminglink" required>
+                <h3>FFO - Optional</h3>
+                <p>Who is this for fans of? Bands, places, genres, subconcepts of existentialism?</p>
+                <input type="text" name="FFO">
+                <input type="submit" value="Submit">
+            </form>
             {%endif%}
         </main>
         <aside id="rightSidebar" style="margin-left: 10px;">
