@@ -1,0 +1,80 @@
+<link rel="stylesheet" href="styles.css">
+
+<div id="container">
+    <div id="headerArea">
+        <div id="header"><h1>SZN Archive</h1></div>
+    </div>
+
+    <div id="flex">
+        <aside id="leftSidebar" style="margin-right: 10px;">
+            <h2>Directory</h2>
+            <div class="box">
+                <p>Find your way around the archive! :3</p>
+                <ul style="padding-left: 10px;">
+                    <li><a href="..\">Home</a></li>
+                    <li><a href="#">Browse</a></li>
+                    <li><a href="#">Rate</a></li>
+                    <li><a href="#">Upload</a></li>
+                </ul>
+            </div>
+        </aside>
+        <main>
+            <h1>Upload a Song! :3</h1>
+            <p>If you're on this website, you probably love niche music. But somebody needs to upload the niche music to the archive! Take matters into your own hands.</p>
+            {%if user is eq "None"%}
+            <h2>You need an account to upload songs to our site! Do yourself a solid and sign up using the sidebar.</h2>
+            <h3>Or Sign Up if you already have one lolz</h3>
+            {%else%}
+            <h3>Title</h3>
+            <p>What's the song called?</p>
+            <input type="text" name="title" required>
+            <h3>Release</h3>
+            <p>What Album / EP / Single / Mixtape is it off? Compilations are for POSERS!</p>
+            <input type="text" name="release" required>
+            <h3>Streaming Link</h3>
+            <p>Put in a link for where everyone can stream it for free. WITHOUT AN ACCOUNT. Bandcamp, Youtube, hell, even Google Drive.</p>
+            <input type="text" name="streaminglink" required>
+            <h3>FFO - Optional</h3>
+            <p>Who is this for fans of? Bands, places, genres, subconcepts of existentialism?</p>
+            <input type="text" name="FFO">
+            {%endif%}
+        </main>
+        <aside id="rightSidebar" style="margin-left: 10px;">
+            {%if user is eq "None"%}
+            <h2>Sign In!</h2>
+            <div class="box">
+                <form action="/submit-signin" method="POST">
+                    <h3>Username:</h3>
+                    <input type="text" name="username" required>
+                    <h3>Password:</h3>
+                    <input type="password" name="password" required>
+                    <input type="submit" value="Submit">
+                 </form>
+            </div>
+            <h2>Sign Up!</h2>
+            <div class="box">
+                <form action="/submit-signup" method="POST">
+                    <h3>Username:</h3>
+                    <input type="text" name="username" required>
+                    <h3>Email Address:</h3>
+                    <input type="text" name="email" required>
+                    <h3>Password:</h3>
+                    <input type="password" name="password" required>
+                    <h3>DOB - Please use DD/MM/YYYY:</h3>
+                    <div class="dobentry">
+                        <input type="number" name="dd" size="2" required>
+                        <input type="number" name="mm" size="2" required>
+                        <input type="number" name="yyyy" size="4" required>
+                    </div>
+                    <input type="submit" value="Submit">
+                 </form>
+            </div>
+            {%else%}
+            <h2>Welcome Back!</h2>
+            <h3>The Archive is your oyster, {{user}}.</h3>
+            {%endif%}
+        </aside>
+    </div>
+    <footer id="footer" style="margin-top: 10px;">CC0 Public Domain, 2022</footer>
+</div>
+
