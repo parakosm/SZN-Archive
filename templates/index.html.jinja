@@ -11,7 +11,7 @@
             <div class="box">
                 <p>Find your way around the archive! :3</p>
                 <ul style="padding-left: 10px;">
-                    <li><a href="#">Home</a></li>
+                    <li><a href="..\">Home</a></li>
                     <li><a href="#">Browse</a></li>
                     <li><a href="#">Rate</a></li>
                     <li><a href="#">Upload</a></li>
@@ -29,6 +29,7 @@
             <p>Alternatively, you can reconsider your life choices, realise that you listen to terrible music, and SEEK SOME HELP!!</p>
         </main>
         <aside id="rightSidebar" style="margin-left: 10px;">
+            {%if user is eq "None"%}
             <h2>Sign In!</h2>
             <div class="box">
                 <form action="/submit-signin" method="POST">
@@ -57,6 +58,10 @@
                     <input type="submit" value="Submit">
                  </form>
             </div>
+            {%else%}
+            <h2>Welcome Back!</h2>
+            <h3>The Archive is your oyster, {{user}}.</h3>
+            {%endif%}
         </aside>
     </div>
     <footer id="footer" style="margin-top: 10px;">CC0 Public Domain, 2022</footer>
