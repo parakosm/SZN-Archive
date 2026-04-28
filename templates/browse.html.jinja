@@ -1,0 +1,32 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+<div id="container">
+    <div id="headerArea">
+        <div id="header"><h1>SZN Archive</h1></div>
+    </div>
+
+    <div id="flex">
+        <aside id="leftSidebar" style="margin-right: 10px;">
+            <h2>Directory</h2>
+            <div class="box">
+                <p>Find your way around the archive! :3</p>
+                <ul style="padding-left: 10px;">
+                    <li><a href="..\">Home</a></li>
+                    <li><a href="#">Browse</a></li>
+                    <li><a href="#">Rate</a></li>
+                    <li><a href="..\upload">Upload</a></li>
+                </ul>
+            </div>
+        </aside>
+        <main>
+            <h1>Browse the Archive</h1>
+        </main>
+        <aside id="rightSidebar" style="margin-left: 10px;">
+            <h2>Sign In!</h2>
+            <div class="box">
+                <p>What the hell is {{ username }} Season!? Better go show everyone.</p>
+            </div>
+        </aside>
+    </div>
+    <footer id="footer" style="margin-top: 10px;">CC0 Public Domain, 2022</footer>
+</div>
