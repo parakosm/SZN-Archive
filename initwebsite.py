@@ -1,5 +1,9 @@
 from flask import Flask, render_template, request, make_response
 import sqlite3
+import os
+
+basedir = os.path.dirname(os.path.abspath(__file__))
+dbpath = os.path.join(basedir, "Database", "database.db")
 
 app = Flask(__name__)
 
@@ -15,7 +19,7 @@ def index_signinsubmitted():
     if request.method == 'POST':
         form_data = request.form
         print(f"Sign in attempt: {dict(form_data)}") 
-        database = sqlite3.connect("Database\database.db")
+        database = sqlite3.connect(dbpath)
         cursor = database.cursor()
         cursor.execute(f"SELECT password FROM Users WHERE username = \'{form_data['username']}\'")
         user = cursor.fetchone()
@@ -35,7 +39,7 @@ def index_signupsubmitted():
     if request.method == 'POST':
         form_data = request.form
         print(f"Sign up attempt: {dict(form_data)}") 
-        database = sqlite3.connect("Database\database.db")
+        database = sqlite3.connect(dbpath)
         cursor = database.cursor()
         dob = f"{form_data['dd']}-{form_data['mm']}-{form_data['yyyy']}"
         cursor.execute("INSERT INTO Users (username, email, password, DOB) VALUES (?, ?, ?, ?)", (form_data['username'], form_data['email'], form_data['password'], dob))
@@ -57,7 +61,7 @@ def upload_songsubmitted():
     if request.method == 'POST':
         form_data = request.form
         print(f"Upload attempt: {dict(form_data)}")
-        database = sqlite3.connect("Database\database.db")
+        database = sqlite3.connect(dbpath)
         cursor = database.cursor()
         title = form_data['title']
         release = form_data['release']
@@ -66,12 +70,11 @@ def upload_songsubmitted():
         user = request.cookies.get('User')
         cursor.execute(f"SELECT songid FROM Songs")
         ids_available = cursor.fetchall()
-        for i, entry in enumerate(ids_available):
-            ids_available[i] = entry.replace(",", "")
-        newid = max(ids_available)
-        cursor.execute("INSERT INTO Users (username, songid, streaminglink, title, release, FFO) VALUES (?, ?, ?, ?, ?, ?)", ())
+        ids_available = [row[0] for row in ids_available]
+        newid = max(ids_available) + 1
+        cursor.execute("INSERT INTO Songs (username, songid, streaminglink, title, release, FFO) VALUES (?, ?, ?, ?, ?, ?)", (user, newid, streaminglink, title, release, forfansof))
         database.commit()
         database.close()
-
+        return render_template('uploadsuccess.html.jinja', user=user)
 if __name__ == '__main__':
     app.run(debug=True)
