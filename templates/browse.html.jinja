@@ -12,20 +12,66 @@
                 <p>Find your way around the archive! :3</p>
                 <ul style="padding-left: 10px;">
                     <li><a href="..\">Home</a></li>
-                    <li><a href="#">Browse</a></li>
+                    <li><a href="..\browse">Browse</a></li>
                     <li><a href="#">Rate</a></li>
                     <li><a href="..\upload">Upload</a></li>
                 </ul>
             </div>
         </aside>
         <main>
-            <h1>Browse the Archive</h1>
+        {%if user is eq "None"%}
+            <h2>You need an account to upload songs to our site! Do yourself a solid and Sign Up using the sidebar.</h2>
+            <h3>Or Sign In if you already have one lolz</h3>
+        {%else%}
+            <h1>Browse our Database rawr</h1>
+            <p>Welcome to the main attraction! Give us a desired rating, from 0-5, and we'll give you a random song that has that rating. Find some new music- for better or worse.</p>
+            <form action="/browse-rated" method="POST">
+                    <h3>Minimum Rating:</h3>
+                    <input type="integer" name="minimum" required>
+                    <h3>Maximum Rating:</h3>
+                    <input type="text" name="maximum" required>
+                    <input type="submit" value="Browse Rated">
+            </form>
+            <p>Want to be even more niche? Check out a song <a>hasn't been rated yet!</a></p>
+            <form action="/browse-unrated" method="POST">
+                    <input type="submit" value=" Browse Unrated">
+            </form>
+        {%endif%}
         </main>
         <aside id="rightSidebar" style="margin-left: 10px;">
+            {%if user is eq "None"%}
             <h2>Sign In!</h2>
             <div class="box">
-                <p>What the hell is {{ username }} Season!? Better go show everyone.</p>
+                <form action="/submit-signin" method="POST">
+                    <h3>Username:</h3>
+                    <input type="text" name="username" required>
+                    <h3>Password:</h3>
+                    <input type="password" name="password" required>
+                    <input type="submit" value="Submit">
+                 </form>
             </div>
+            <h2>Sign Up!</h2>
+            <div class="box">
+                <form action="/submit-signup" method="POST">
+                    <h3>Username:</h3>
+                    <input type="text" name="username" required>
+                    <h3>Email Address:</h3>
+                    <input type="text" name="email" required>
+                    <h3>Password:</h3>
+                    <input type="password" name="password" required>
+                    <h3>DOB - Please use DD/MM/YYYY:</h3>
+                    <div class="dobentry">
+                        <input type="number" name="dd" size="2" required>
+                        <input type="number" name="mm" size="2" required>
+                        <input type="number" name="yyyy" size="4" required>
+                    </div>
+                    <input type="submit" value="Submit">
+                 </form>
+            </div>
+            {%else%}
+            <h2>Welcome Back!</h2>
+            <h3>The Archive is your oyster, {{user}}.</h3>
+            {%endif%}
         </aside>
     </div>
     <footer id="footer" style="margin-top: 10px;">CC0 Public Domain, 2022</footer>
