@@ -1,0 +1,45 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+<div id="container">
+    <div id="headerArea">
+        <div id="header"><h1>SZN Archive</h1></div>
+    </div>
+
+    <div id="flex">
+        <aside id="leftSidebar" style="margin-right: 10px;">
+            <h2>Directory</h2>
+            <div class="box">
+                <p>Find your way around the archive! :3</p>
+                <ul style="padding-left: 10px;">
+                    <li><a href="..\">Home</a></li>
+                    <li><a href="..\browse">Browse</a></li>
+                    <li><a href="..\upload">Upload</a></li>
+                </ul>
+            </div>
+        </aside>
+        <main>
+            <h1>Rate Song - {{ title }}</h1>
+            <h2>Off of {{ release }}</h2> 
+            {%if forfansof %}
+            <p>The uploader reccomends this track for fans of "{{forfansof}}".</p>
+            {%endif%}
+            {%if rating is eq "None"%}
+            <p>This song is currently unrated.</p>
+            {%else%}
+            <p>This song's current rating is {{ rating }}!</p>
+            {%endif%}
+            <p>Give it a listen <a href="{{ streaminglink }}">here</a> and then give us your take on scale of 1-5:</p>
+            <form action="/submit-signup" method="POST">
+            <input type="number" name="rate" size="1" required>
+            <input type="submit" value="Submit">
+            </form>
+        </main>
+        <aside id="rightSidebar" style="margin-left: 10px;">
+            <h2>Sign In!</h2>
+            <div class="box">
+                <p>New soon in: {{ username }}'s rating of {{ title }} is crazy unbased.</p>
+            </div>
+        </aside>
+    </div>
+    <footer id="footer" style="margin-top: 10px;">CC0 Public Domain, 2022</footer>
+</div>

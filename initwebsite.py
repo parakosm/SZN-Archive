@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, make_response
 import sqlite3
 import os
+import random
+import datetime
 
 basedir = os.path.dirname(os.path.abspath(__file__))
 dbpath = os.path.join(basedir, "Database", "database.db")
@@ -84,33 +86,36 @@ def browse():
         user = "None"
     return render_template('browse.html.jinja', user=user)
 
-@app.route('/browse-unrated')
+@app.route('/browse-unrated', methods=['POST'])
 def browseunrated():
-    user = request.cookies.get('User')
-    if user is None:
-        user = "None"
-    database = sqlite3.connect(dbpath)
-    cursor = database.cursor()
-    cursor.execute("SELECT songid FROM Songs")
-    allsongids = cursor.fetchall()
-    allsongids = [row[0] for row in allsongids]
-    cursor.execute("SELECT songid FROM Ratnings")
-    ratedsongids = cursor.fetchall()
-    ratedsongids = [row[0] for row in ratedsongids]
-    unratedsongids = list(set(allsongids) ^ set(ratedsongids))
-    song = unratedsongids.choice()
-    cursor.execute(f"SELECT title FROM Songs WHERE songid = \'{song}\'")
-    title = cursor.fetchone()
-    cursor.execute(f"SELECT release FROM Songs WHERE songid = \'{song}\'")
-    release = cursor.fetchone()
-    cursor.execute(f"SELECT streaminglink FROM Songs WHERE songid = \'{song}\'")
-    streaminglink = cursor.fetchone()
-    cursor.execute(f"SELECT FFO FROM Songs WHERE songid = \'{song}\'")
-    forfansof = cursor.fetchone()
-    database.close()
-    return render_template('rate.html.jinja', user=user, title=title, release=release, streaminglink=streaminglink, forfansof=forfansof)
+    if request.method == 'POST':
+        user = request.cookies.get('User')
+        if user is None:
+            user = "None"
+        database = sqlite3.connect(dbpath)
+        cursor = database.cursor()
+        cursor.execute("SELECT songid FROM Songs")
+        allsongids = cursor.fetchall()
+        allsongids = [row[0] for row in allsongids]
+        cursor.execute("SELECT songid FROM Ratings")
+        ratedsongids = cursor.fetchall()
+        ratedsongids = [row[0] for row in ratedsongids]
+        unratedsongids = list(set(allsongids) ^ set(ratedsongids))
+        song = random.choice(unratedsongids)
+        cursor.execute(f"SELECT title FROM Songs WHERE songid = \'{song}\'")
+        title = cursor.fetchone()
+        cursor.execute(f"SELECT release FROM Songs WHERE songid = \'{song}\'")
+        release = cursor.fetchone()
+        cursor.execute(f"SELECT streaminglink FROM Songs WHERE songid = \'{song}\'")
+        streaminglink = cursor.fetchone()
+        cursor.execute(f"SELECT FFO FROM Songs WHERE songid = \'{song}\'")
+        forfansof = cursor.fetchone()
+        database.close()
+        response = make_response(render_template('rate.html.jinja', user=user[0], title=title[0], release=release[0], streaminglink=streaminglink[0], forfansof=forfansof[0], rating="None"))
+        response.set_cookie("Song_To_Rate", song)
+        return response
 
-@app.route('/browse-rated')
+@app.route('/browse-rated', methods=['POST'])
 def browserated():
     if request.method == 'POST':
         user = request.cookies.get('User')
@@ -125,7 +130,7 @@ def browserated():
         allsongids = [row[0] for row in allsongids]
         songfound = False
         while songfound == False:
-            song = allsongids.choice()
+            song = random.choice(allsongids)
             cursor.execute(f"SELECT rating FROM Ratings WHERE songid = \'{song}\'")
             ratings = cursor.fetchall()
             ratings = [row[0] for row in ratings]
@@ -141,7 +146,27 @@ def browserated():
         cursor.execute(f"SELECT FFO FROM Songs WHERE songid = \'{song}\'")
         forfansof = cursor.fetchone()
         database.close()
-        return render_template('rate.html.jinja', user=user, title=title, release=release, streaminglink=streaminglink, forfansof=forfansof, rating=rating)
+        response = make_response(render_template('rate.html.jinja', user=user[0], title=title[0], release=release[0], streaminglink=streaminglink[0], forfansof=forfansof[0], rating=str(rating[0])))
+        response.set_cookie("Song_To_Rate", song)
+        return response
+
+@app.route('/submit-rate', methods=['POST'])
+def submitrating():
+    if request.method == 'POST':
+        form_data = request.form
+        database = sqlite3.connect(dbpath)
+        cursor = database.cursor()
+        user = request.cookies.get('User')
+        song = request.cookies.get('Song_To_Rate')
+        cursor.execute("SELECT interactionid FROM Ratings")
+        ids_available = cursor.fetchall()
+        ids_available = [row[0] for row in ids_available]
+        newid = max(ids_available) + 1
+        rating = form_data["rate"]
+        dateandtime = str(datetime.now())
+        cursor.execute("INSERT INTO Ratings (username, songid, interactionid, dateandtime, rating) VALUES (?, ?, ?, ?, ?", (user, song, newid, dateandtime, rating))
+        database.close()
+        return render_template('browse.html.jinja')
 
 if __name__ == '__main__':
     app.run(debug=True)
