@@ -29,7 +29,7 @@
             <p>This song's current rating is {{ rating }}!</p>
             {%endif%}
             <p>Give it a listen <a href="{{ streaminglink }}">here</a> and then give us your take on scale of 1-5:</p>
-            <form action="/submit-signup" method="POST">
+            <form action="/submit-rate" method="POST">
             <input type="number" name="rate" size="1" required>
             <input type="submit" value="Submit">
             </form>

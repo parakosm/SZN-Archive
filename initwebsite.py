@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, make_response
 import sqlite3
 import os
 import random
-import datetime
+from datetime import datetime
 
 basedir = os.path.dirname(os.path.abspath(__file__))
 dbpath = os.path.join(basedir, "Database", "database.db")
@@ -112,7 +112,7 @@ def browseunrated():
         forfansof = cursor.fetchone()
         database.close()
         response = make_response(render_template('rate.html.jinja', user=user[0], title=title[0], release=release[0], streaminglink=streaminglink[0], forfansof=forfansof[0], rating="None"))
-        response.set_cookie("Song_To_Rate", song)
+        response.set_cookie("Song_To_Rate", str(song))
         return response
 
 @app.route('/browse-rated', methods=['POST'])
@@ -121,7 +121,6 @@ def browserated():
         user = request.cookies.get('User')
         if user is None:
             user = "None"
-
         form_data = request.form
         database = sqlite3.connect(dbpath)
         cursor = database.cursor()
@@ -134,9 +133,14 @@ def browserated():
             cursor.execute(f"SELECT rating FROM Ratings WHERE songid = \'{song}\'")
             ratings = cursor.fetchall()
             ratings = [row[0] for row in ratings]
-            rating = sum(rating) / len(rating)
-            if rating >= form_data["minimum"] and rating <= form_data["maximum"]:
-                songfound = True
+            if len(ratings) < 0:
+                rating = sum(ratings) / len(ratings)
+                if rating >= form_data["minimum"] and rating <= form_data["maximum"]:
+                    songfound = True
+                else:
+                    print("Song attempt failed")
+            else:
+                print("Song attempt failed")
         cursor.execute(f"SELECT title FROM Songs WHERE songid = \'{song}\'")
         title = cursor.fetchone()
         cursor.execute(f"SELECT release FROM Songs WHERE songid = \'{song}\'")
@@ -147,7 +151,7 @@ def browserated():
         forfansof = cursor.fetchone()
         database.close()
         response = make_response(render_template('rate.html.jinja', user=user[0], title=title[0], release=release[0], streaminglink=streaminglink[0], forfansof=forfansof[0], rating=str(rating[0])))
-        response.set_cookie("Song_To_Rate", song)
+        response.set_cookie("Song_To_Rate", str(song))
         return response
 
 @app.route('/submit-rate', methods=['POST'])
@@ -161,10 +165,11 @@ def submitrating():
         cursor.execute("SELECT interactionid FROM Ratings")
         ids_available = cursor.fetchall()
         ids_available = [row[0] for row in ids_available]
-        newid = max(ids_available) + 1
+        newid = max(ids_available, default=0) + 1
         rating = form_data["rate"]
         dateandtime = str(datetime.now())
-        cursor.execute("INSERT INTO Ratings (username, songid, interactionid, dateandtime, rating) VALUES (?, ?, ?, ?, ?", (user, song, newid, dateandtime, rating))
+        cursor.execute("INSERT INTO Ratings (username, songid, interactionid, dateandtime, rating) VALUES (?, ?, ?, ?, ?)", (user, song, newid, dateandtime, rating))
+        database.commit()
         database.close()
         return render_template('browse.html.jinja')
 
