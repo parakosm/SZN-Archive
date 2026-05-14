@@ -138,9 +138,9 @@ def browserated():
                 if rating >= form_data["minimum"] and rating <= form_data["maximum"]:
                     songfound = True
                 else:
-                    print("Song attempt failed")
+                    print("Rating Out of Bounds")
             else:
-                print("Song attempt failed")
+                print("No Ratings")
         cursor.execute(f"SELECT title FROM Songs WHERE songid = \'{song}\'")
         title = cursor.fetchone()
         cursor.execute(f"SELECT release FROM Songs WHERE songid = \'{song}\'")
